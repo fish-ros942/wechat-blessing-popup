@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考研祝福弹窗</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: 'Microsoft YaHei', sans-serif;
+            position: relative;
+            height: 100vh;
+        }
+        
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        /* 弹窗样式 */
+        .blessing-box {
+            position: absolute;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(255, 105, 97, 0.4);
+            z-index: 100;
+            animation: pop 0.6s ease-out;
+            text-align: center;
+            max-width: 220px;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            line-height: 1.4;
+            transition: transform 0.3s ease;
+        }
+        
+        .blessing-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 105, 97, 0.6);
+        }
+        
+        /* 弹窗动画 */
+        @keyframes pop {
+            0% { 
+                transform: scale(0.3) rotate(-5deg); 
+                opacity: 0; 
+            }
+            70% { 
+                transform: scale(1.1) rotate(2deg); 
+            }
+            100% { 
+                transform: scale(1) rotate(0deg); 
+                opacity: 1; 
+            }
+        }
+        
+        /* 标题样式 */
+        .title {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #0f0;
+            font-size: 3rem;
+            text-align: center;
+            text-shadow: 0 0 20px #0f0;
+            z-index: 100;
+            opacity: 0.9;
+            width: 100%;
+            padding: 0 20px;
+        }
+        
+        /* 按钮样式 */
+        .restart-btn {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 35px;
+            background: rgba(0, 255, 0, 0.2);
+            color: #0f0;
+            border: 2px solid #0f0;
+            border-radius: 40px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+            transition: all 0.3s;
+            text-shadow: 0 0 10px #0f0;
+            font-weight: bold;
+        }
+        
+        .restart-btn:hover {
+            transform: translateX(-50%) scale(1.1);
+            background: rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 35px rgba(0, 255, 0, 0.8);
+        }
+        
+        /* 计数器 */
+        .counter {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #0f0;
+            font-size: 1.5rem;
+            text-align: center;
+            z-index: 100;
+            text-shadow: 0 0 10px #0f0;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    
+    <h1 class="title">考研加油 💪</h1>
+    <div class="counter" id="counter">已发送祝福: 0</div>
+    <button class="restart-btn" onclick="restartAnimation()">更多祝福</button>
+
+    <script>
+        // 数字雨背景
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@%&*()[]{}<>?/\\|~-=+^!";
+        const charArray = chars.split('');
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0f0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 35);
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // 扩展祝福语
+        const blessings = [
+            "雯雯，考研加油！", "每步都算数，别急", "平安喜乐，万事胜意～",
+            "这一程，你超棒", "家人安康，日子甜甜🍬", "所求皆如愿，所行皆坦途！",
+            "错题攒够了，就上岸", "我们终将上岸，阳光万里", "星光不负赶路人",
+            "时光不负有心人", "坚持就是胜利", "努力终有回报", "一战成硕，金榜题名",
+            "前程似锦，未来可期", "考研顺利，梦想成真", "心态平和，发挥超常",
+            "学有所成，心想事成", "逢考必过，好运连连", "坚持到底，就是胜利",
+            "相信自己，你能行", "努力拼搏，无悔青春", "梦想在前，路在脚下",
+            "加油，考研人！", "成功在望，继续前行", "坚持学习，终将收获",
+            "不畏艰难，勇往直前", "全力以赴，不留遗憾", "你是最棒的！",
+            "相信自己，创造奇迹", "努力奋斗，未来可期", "考研必胜！", "一定上岸",
+            "坚持就是胜利", "努力不会白费", "梦想终将实现", "前程万里",
+            "一切顺利", "金榜题名时", "苦尽甘来", "坚持到底", "永不放弃",
+            "相信自己", "勇往直前", "梦想成真", "成功在望", "加油加油！",
+            "你最棒了！", "一定可以的！", "继续努力", "坚持学习", "每天进步",
+            "积累知识", "厚积薄发", "静待花开", "终将绽放", "美丽人生",
+            "努力奋斗", "前程似锦", "梦想成真", "心想事成", "万事如意",
+            "一帆风顺", "步步高升", "学业有成", "事业顺利", "幸福安康",
+            "快乐每一天", "笑口常开", "好运连连", "财源滚滚", "福星高照",
+            "身体健康", "阖家幸福", "平安喜乐", "天天开心", "心想事成",
+            "梦想照进现实", "未来可期", "前途无量", "大展宏图", "鹏程万里",
+            "一帆风顺", "马到成功", "旗开得胜", "功成名就", "名扬四海",
+            "才华横溢", "出类拔萃", "卓尔不群", "超凡脱俗", "独具匠心"
+        ];
+
+        let blessingCount = 0;
+        const maxBlessings = 50; // 同时显示的最大弹窗数量
+
+        // 创建弹窗
+        function createBlessing() {
+            // 如果弹窗太多，移除最早的一个
+            const boxes = document.querySelectorAll('.blessing-box');
+            if (boxes.length >= maxBlessings) {
+                boxes[0].remove();
+            }
+            
+            const box = document.createElement("div");
+            box.className = "blessing-box";
+            
+            // 随机选祝福
+            const randomBless = blessings[Math.floor(Math.random() * blessings.length)];
+            box.innerText = randomBless;
+            
+            // 随机位置（确保不会太靠近边缘）
+            const x = Math.random() * (window.innerWidth - 240) + 20;
+            const y = Math.random() * (window.innerHeight - 120) + 20;
+            box.style.left = `${x}px`;
+            box.style.top = `${y}px`;
+            
+            // 随机颜色
+            const hue = Math.random() * 60 + 10; // 暖色调
+            box.style.background = `linear-gradient(135deg, hsl(${hue}, 100%, 85%), hsl(${hue+20}, 100%, 75%))`;
+            
+            // 随机大小
+            const scale = 0.8 + Math.random() * 0.4;
+            box.style.transform = `scale(${scale})`;
+            
+            // 添加到页面
+            document.body.appendChild(box);
+            
+            // 更新计数器
+            blessingCount++;
+            document.getElementById('counter').textContent = `已发送祝福: ${blessingCount}`;
+            
+            // 5-8秒后自动消失
+            const duration = 5000 + Math.random() * 3000;
+            setTimeout(() => {
+                if (box.parentNode) {
+                    box.style.opacity = '0';
+                    box.style.transform = `scale(0.5)`;
+                    setTimeout(() => {
+                        if (box.parentNode) {
+                            box.remove();
+                        }
+                    }, 500);
+                }
+            }, duration);
+            
+            return box;
+        }
+
+        // 开始动画
+        function startAnimation() {
+            // 持续创建弹窗
+            const createInterval = setInterval(() => {
+                createBlessing();
+            }, 800); // 每800ms创建一个新弹窗
+            
+            return createInterval;
+        }
+
+        let animationInterval;
+
+        // 重新开始动画
+        function restartAnimation() {
+            // 清除现有弹窗
+            const boxes = document.querySelectorAll('.blessing-box');
+            boxes.forEach(box => box.remove());
+            
+            // 重置计数器
+            blessingCount = 0;
+            document.getElementById('counter').textContent = `已发送祝福: ${blessingCount}`;
+            
+            // 重新开始动画
+            if (animationInterval) {
+                clearInterval(animationInterval);
+            }
+            animationInterval = startAnimation();
+        }
+
+        // 页面加载完成后开始动画
+        window.onload = function() {
+            animationInterval = startAnimation();
+        };
+
+        // 响应窗口大小变化
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
